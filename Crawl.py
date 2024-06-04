@@ -39,7 +39,7 @@ def __getpage(url):
         return page
 #处理资源页面 爬取资源地址
 def CrawlSourcePage(url,filedir,filename,CrawledURLs):
-    print url
+    print (url)
     page = __getpage(url)
     if page=="error":
         return
@@ -55,12 +55,12 @@ def CrawlSourcePage(url,filedir,filename,CrawledURLs):
             f.write(sourceurl.encode("utf-8")+"\n")
         f.close()
     except:
-        print "!!!!!!!!!!!!!!!!!"
+        print ("!!!!!!!!!!!!!!!!!")
 
 # 解析分类文件
 def CrawListPage(indexurl,filedir,CrawledURLs):
-    print "正在解析分类主页资源"
-    print indexurl
+    print ("正在解析分类主页资源")
+    print (indexurl)
     page = __getpage(indexurl)
     if page=="error":
         return
@@ -89,28 +89,28 @@ def CrawListPage(indexurl,filedir,CrawledURLs):
             pass
         else:
             # 分页地址 从中嵌套再次解析
-            print "分页地址 从中嵌套再次解析",url
+            print ("分页地址 从中嵌套再次解析"),url
             index = indexurl.rfind("/")
             baseurl = indexurl[0:index + 1]
             pageurl = baseurl + url
             if __isexit(pageurl,CrawledURLs):
                 pass
             else:
-                print "分页地址 从中嵌套再次解析", pageurl
+                print ("分页地址 从中嵌套再次解析"), pageurl
                 CrawListPage(pageurl,filedir,CrawledURLs)
             pass
     pass
 
 #解析首页
 def CrawIndexPage(starturl):
-    print "正在爬取首页"
+    print ("正在爬取首页")
     page = __getpage(starturl)
     if page=="error":
         return
     page = page.decode('gbk', 'ignore')
     tree = etree.HTML(page)
     Nodes = tree.xpath("//div[@id='menu']//a")
-    print "首页解析出地址",len(Nodes),"条"
+    print ("首页解析出地址"),len(Nodes),"条"
     for node in Nodes:
         CrawledURLs = []
         CrawledURLs.append(starturl)
@@ -123,7 +123,7 @@ def CrawIndexPage(starturl):
                     catalog = node.xpath("text()")[0].encode("utf-8")
                     newdir = "E:/电影资源/" + catalog
                     os.makedirs(newdir.decode("utf-8"))
-                    print "创建分类目录成功------"+newdir
+                    print ("创建分类目录成功------")+newdir
                     thread = myThread(host + url, newdir,CrawledURLs)
                     thread.start()
                 except:
